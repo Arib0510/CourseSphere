@@ -107,10 +107,14 @@ const login = async (req, res) => {
         name: profile?.full_name || "",
         student_id: profile?.student_id || null,
         department: profile?.department || null,
-        registration_no:  profile?.registration_no  || null,
-        academic_session: profile?.academic_session || null,
-        earned_credits:   profile?.earned_credits   ?? null,
-        backlog_count:    profile?.backlog_count     ?? null,
+        registration_no:      profile?.registration_no      || null,
+        academic_session:     profile?.academic_session     || null,
+        earned_credits:       profile?.earned_credits       ?? null,
+        backlog_count:        profile?.backlog_count         ?? null,
+        name_bangla:          profile?.name_bangla          || null,
+        father_name:          profile?.father_name          || null,
+        father_name_bangla:   profile?.father_name_bangla   || null,
+        address_current:      profile?.address_current      || null,
         role: isAdmin ? "admin" : "student",
         isAdmin,
       },
@@ -185,17 +189,21 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { full_name, student_id, department, registration_no, academic_session, earned_credits, backlog_count } = req.body;
+    const { full_name, student_id, department, registration_no, academic_session, earned_credits, backlog_count, name_bangla, father_name, father_name_bangla, address_current } = req.body;
 
     // Build the update object — only include provided fields
     const updates = {};
-    if (full_name         !== undefined) updates.full_name         = full_name;
-    if (student_id        !== undefined) updates.student_id        = student_id;
-    if (department        !== undefined) updates.department        = department;
-    if (registration_no   !== undefined) updates.registration_no   = registration_no   || null;
-    if (academic_session  !== undefined) updates.academic_session  = academic_session  || null;
-    if (earned_credits    !== undefined) updates.earned_credits    = earned_credits    !== '' && earned_credits    != null ? Number(earned_credits)  : null;
-    if (backlog_count     !== undefined) updates.backlog_count     = backlog_count     !== '' && backlog_count     != null ? Number(backlog_count)   : null;
+    if (full_name            !== undefined) updates.full_name            = full_name;
+    if (student_id           !== undefined) updates.student_id           = student_id;
+    if (department           !== undefined) updates.department           = department;
+    if (registration_no      !== undefined) updates.registration_no      = registration_no      || null;
+    if (academic_session     !== undefined) updates.academic_session     = academic_session     || null;
+    if (earned_credits       !== undefined) updates.earned_credits       = earned_credits       !== '' && earned_credits       != null ? Number(earned_credits)  : null;
+    if (backlog_count        !== undefined) updates.backlog_count        = backlog_count        !== '' && backlog_count        != null ? Number(backlog_count)   : null;
+    if (name_bangla          !== undefined) updates.name_bangla          = name_bangla          || null;
+    if (father_name          !== undefined) updates.father_name          = father_name          || null;
+    if (father_name_bangla   !== undefined) updates.father_name_bangla   = father_name_bangla   || null;
+    if (address_current      !== undefined) updates.address_current      = address_current      || null;
 
     if (Object.keys(updates).length === 0) {
       return error(res, "No fields to update.", 400);

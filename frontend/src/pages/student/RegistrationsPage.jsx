@@ -1,17 +1,30 @@
-// Tarik's student Panel Frontend
 import { useEffect, useState } from 'react'
-import { ClipboardList, Trash2, BookOpen, CreditCard, Calendar } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { getMyRegistrations, dropCourse } from '../../services/registrationService'
+import { useAuth } from '../../context/AuthContext'
 import Loader from '../../components/common/Loader'
 import Modal from '../../components/common/Modal'
 import Button from '../../components/common/Button'
+import { generateRegistrationPDF } from '../../utils/generateRegistrationPDF'
+import { generateExamFormPDF } from '../../utils/generateExamFormPDF'
 
 export default function RegistrationsPage() {
+  const { user } = useAuth()
   const [registrations, setRegistrations] = useState([])
   const [loading, setLoading] = useState(true)
   const [dropping, setDropping] = useState(null)
   const [confirmModal, setConfirmModal] = useState({ open: false, reg: null })
+  const [generatingPDF, setGeneratingPDF] = useState(false)
+  const [generatingExamPDF, setGeneratingExamPDF] = useState(false)
+  const [examFormModal, setExamFormModal] = useState(false)
+  const [examOptions, setExamOptions] = useState({
+    examYear: String(new Date().getFullYear()).slice(-2),
+    studyYear: '২য়',
+    koushal: '',
+    semesterNo: '২য়',
+    examType: 'semester',
+  })
 
   useEffect(() => {
     fetchRegistrations()
@@ -28,6 +41,8 @@ export default function RegistrationsPage() {
       .finally(() => setLoading(false))
   }
 
+  const getRegId = (reg) => reg.id || reg.registration_id
+
   const handleDropClick = (reg) => {
     setConfirmModal({ open: true, reg })
   }
@@ -35,11 +50,12 @@ export default function RegistrationsPage() {
   const handleConfirmDrop = async () => {
     const reg = confirmModal.reg
     if (!reg) return
-    setDropping(reg.id)
+    const regId = getRegId(reg)
+    setDropping(regId)
     setConfirmModal({ open: false, reg: null })
     try {
-      await dropCourse(reg.id)
-      setRegistrations(prev => prev.filter(r => r.id !== reg.id))
+      await dropCourse(regId)
+      setRegistrations(prev => prev.filter(r => getRegId(r) !== regId))
       toast.success(`Dropped ${reg.course?.course_no || 'course'} successfully`)
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to drop course')
@@ -55,88 +71,326 @@ export default function RegistrationsPage() {
     return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
   }
 
+  const handleGeneratePDF = async () => {
+    if (registrations.length === 0) {
+      toast.info('No registered courses to include in the form.')
+      return
+    }
+    setGeneratingPDF(true)
+    try {
+      const extras = {
+        registrationNo:  user?.registration_no  || '',
+        academicSession: user?.academic_session  || '',
+        earnedCredits:   user?.earned_credits    != null ? Number(user.earned_credits) : null,
+        backlogCount:    user?.backlog_count      != null ? Number(user.backlog_count)  : null,
+      }
+      generateRegistrationPDF(user, registrations, extras)
+      toast.success('Registration form downloaded!')
+    } catch {
+      toast.error('Failed to generate PDF. Please try again.')
+    } finally {
+      setGeneratingPDF(false)
+    }
+  }
+
+  const deptToBengali = (dept) => {
+    const map = {
+      CSE: 'সিএসই', EEE: 'ইইই', CE: 'পুর', ME: 'যন্ত্র',
+      IPE: 'আইপিই', GCE: 'জিসিই', MSE: 'এমএসই', ECE: 'ইসিই',
+      URP: 'ইউআরপি', Arch: 'স্থা', CHE: 'রসায়ন', MTE: 'এমটিই',
+    }
+    return map[dept] || dept || ''
+  }
+
+  const handleExamFormButtonClick = () => {
+    if (registrations.length === 0) {
+      toast.info('No registered courses to include in the exam form.')
+      return
+    }
+    setExamOptions(prev => ({ ...prev, koushal: deptToBengali(user?.department) }))
+    setExamFormModal(true)
+  }
+
+  const handleGenerateExamPDF = async () => {
+    setExamFormModal(false)
+    setGeneratingExamPDF(true)
+    try {
+      await generateExamFormPDF(user, registrations, examOptions)
+      toast.success('Exam form downloaded!')
+    } catch {
+      toast.error('Failed to generate exam form. Please try again.')
+    } finally {
+      setGeneratingExamPDF(false)
+    }
+  }
+
   if (loading) return <Loader size="lg" />
 
   return (
-    <div className="pt-4 space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="pt-4 space-y-8">
+      {/* Page Header */}
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#2E2A27] mb-1">My Registrations</h1>
-          <p className="text-[#6B625C] text-sm">Manage your enrolled courses for this semester.</p>
+          <h1 className="font-display text-display text-on-background mb-2">My Registrations</h1>
+          <p className="text-on-surface-variant font-body-md">Manage your enrolled courses for this semester.</p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="bg-[#F9ECEE] border border-[#8B2E3C]/20 rounded-xl px-4 py-2 flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-[#8B2E3C]" />
-            <span className="text-sm font-semibold text-[#8B2E3C]">{registrations.length} Courses</span>
-          </div>
-          <div className="bg-[#F5F3FF] border border-violet-200 rounded-xl px-4 py-2 flex items-center gap-2">
-            <CreditCard className="w-4 h-4 text-[#A78BCF]" />
-            <span className="text-sm font-semibold text-[#A78BCF]">{totalCredits.toFixed(1)} Credits</span>
-          </div>
+
+        {/* Summary Chips + PDF Button */}
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-full border border-outline-variant shadow-sm font-body-md text-sm text-on-surface">
+            <span className="material-symbols-outlined text-primary text-[18px]">menu_book</span>
+            <span className="font-body-md-bold text-primary">{registrations.length}</span>
+            Courses
+          </span>
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-full border border-outline-variant shadow-sm font-body-md text-sm text-on-surface">
+            <span className="material-symbols-outlined text-tertiary text-[18px]">military_tech</span>
+            <span className="font-body-md-bold text-tertiary">{totalCredits.toFixed(1)}</span>
+            Credits
+          </span>
+
+          {/* PDF buttons — only show when there are registrations */}
+          {registrations.length > 0 && (
+            <>
+              <button
+                onClick={handleGeneratePDF}
+                disabled={generatingPDF}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-full font-body-md-bold text-sm shadow-sm hover:bg-primary/90 active:scale-95 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  {generatingPDF ? 'progress_activity' : 'picture_as_pdf'}
+                </span>
+                {generatingPDF ? 'Generating…' : 'Registration Form'}
+              </button>
+
+              <button
+                onClick={handleExamFormButtonClick}
+                disabled={generatingExamPDF}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-on-secondary rounded-full font-body-md-bold text-sm shadow-sm hover:bg-secondary/90 active:scale-95 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  {generatingExamPDF ? 'progress_activity' : 'assignment'}
+                </span>
+                {generatingExamPDF ? 'Generating…' : 'Exam Form'}
+              </button>
+            </>
+          )}
         </div>
       </div>
 
+      {/* Content */}
       {registrations.length === 0 ? (
-        <div className="bg-white rounded-xl border border-[#E7DED6] p-12 text-center shadow-sm">
-          <div className="w-14 h-14 rounded-2xl bg-[#F0F9FF] flex items-center justify-center mx-auto mb-4">
-            <ClipboardList className="w-7 h-7 text-[#7CB9C8]" />
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-surface-container flex items-center justify-center mx-auto mb-4">
+            <span className="material-symbols-outlined text-3xl text-on-surface-variant">assignment</span>
           </div>
-          <h3 className="font-semibold text-[#2E2A27] mb-2">No registrations yet</h3>
-          <p className="text-sm text-[#6B625C]">
+          <h3 className="font-h2 text-h2 text-on-background mb-2">No registrations yet</h3>
+          <p className="text-on-surface-variant font-body-md mb-6 max-w-sm">
             You haven&apos;t registered for any courses. Visit Browse Courses to get started.
           </p>
+          <Link
+            to="/courses"
+            className="inline-flex items-center gap-2 bg-primary text-on-primary rounded-btn font-body-md-bold px-5 py-2.5 hover:bg-primary-container transition-colors"
+          >
+            <span className="material-symbols-outlined text-[18px]">explore</span>
+            Browse Courses
+          </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {registrations.map(reg => (
-            <div
-              key={reg.id}
-              className="bg-white rounded-xl border border-[#E7DED6] border-l-4 border-l-[#4C956C] p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex flex-wrap gap-1.5">
-                  <span className="bg-[#F9ECEE] text-[#8B2E3C] text-xs font-semibold px-2 py-0.5 rounded-full">
-                    {reg.course?.course_no}
-                  </span>
-                  {reg.course?.academic_year && (
-                    <span className="bg-[#F0F9FF] text-[#7CB9C8] text-xs font-semibold px-2 py-0.5 rounded-full">
-                      {reg.course.academic_year}
-                    </span>
-                  )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {registrations.map((reg, idx) => {
+            const regId = getRegId(reg)
+            const isDropping = dropping === regId
+            return (
+              <div
+                key={regId ?? idx}
+                className="bg-surface-container-lowest rounded-[16px] border border-outline-variant shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col overflow-hidden relative group"
+              >
+                {/* Accent bar */}
+                <div className="absolute top-0 left-0 w-full h-[6px] bg-tertiary-container" />
+
+                <div className="p-6 pt-8 flex flex-col flex-1">
+                  {/* Category + course no */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="font-label-caps text-primary text-[10px] uppercase tracking-wider bg-primary-fixed px-2 py-0.5 rounded">
+                        {reg.course?.course_no}
+                      </span>
+                      {reg.course?.academic_year && (
+                        <span className="font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider bg-surface-container-high px-2 py-0.5 rounded border border-outline-variant">
+                          {reg.course.academic_year}
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleDropClick(reg)}
+                      disabled={isDropping}
+                      className="p-1.5 rounded-lg text-error hover:bg-error-container transition-colors disabled:opacity-50"
+                      title="Drop course"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">delete_outline</span>
+                    </button>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="font-h2 text-h2 text-on-background text-[16px] mb-4 flex-grow leading-snug">
+                    {reg.course?.course_title || reg.course?.title}
+                  </h3>
+
+                  {/* Key-value rows */}
+                  <div className="space-y-2 mb-4">
+                    {reg.course?.credit_hours && (
+                      <div className="flex items-center justify-between py-2 border-b border-outline-variant">
+                        <span className="font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-[14px]">military_tech</span>
+                          Credits
+                        </span>
+                        <span className="font-body-md-bold text-on-background text-sm">{reg.course.credit_hours}</span>
+                      </div>
+                    )}
+                    {reg.course?.semester && (
+                      <div className="flex items-center justify-between py-2 border-b border-outline-variant">
+                        <span className="font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-[14px]">swap_vert</span>
+                          Semester
+                        </span>
+                        <span className="font-body-md-bold text-on-background text-sm">{reg.course.semester}</span>
+                      </div>
+                    )}
+                    {reg.course?.academic_year && (
+                      <div className="flex items-center justify-between py-2 border-b border-outline-variant">
+                        <span className="font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-[14px]">school</span>
+                          Year
+                        </span>
+                        <span className="font-body-md-bold text-on-background text-sm">{reg.course.academic_year}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between py-2">
+                      <span className="font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[14px]">calendar_today</span>
+                        Registered
+                      </span>
+                      <span className="font-body-md text-on-surface-variant text-sm">
+                        {formatDate(reg.registered_at || reg.created_at)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Drop button */}
+                  <button
+                    onClick={() => handleDropClick(reg)}
+                    disabled={isDropping}
+                    className="w-full py-3 px-4 rounded-lg border border-error text-error font-body-md-bold hover:bg-error-container flex items-center justify-center gap-2 transition-colors disabled:opacity-50 mt-auto"
+                  >
+                    {isDropping
+                      ? <div className="w-4 h-4 border-2 border-error border-t-transparent rounded-full animate-spin" />
+                      : <span className="material-symbols-outlined text-[18px]">remove_circle_outline</span>}
+                    {isDropping ? 'Dropping…' : 'Drop Course'}
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleDropClick(reg)}
-                  disabled={dropping === reg.id}
-                  className="p-1.5 rounded-lg text-[#C65A5A] hover:bg-red-50 transition-colors disabled:opacity-50"
-                  title="Drop course"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
               </div>
-              <h3 className="font-bold text-[#2E2A27] text-sm mb-2 flex-grow">{reg.course?.title}</h3>
-              <div className="flex flex-wrap gap-3 text-xs text-[#6B625C] mt-1">
-                <span className="flex items-center gap-1">
-                  <CreditCard className="w-3.5 h-3.5" />
-                  {reg.course?.credit_hours} credits
-                </span>
-                {reg.course?.class_hours && (
-                  <span className="flex items-center gap-1">
-                    <BookOpen className="w-3.5 h-3.5" />
-                    {reg.course.class_hours} hrs/wk
-                  </span>
-                )}
-                {reg.course?.semester && (
-                  <span>{reg.course.semester} Sem</span>
-                )}
-              </div>
-              <div className="mt-3 pt-3 border-t border-[#E7DED6] flex items-center gap-1.5 text-xs text-[#9A9189]">
-                <Calendar className="w-3.5 h-3.5" />
-                Registered {formatDate(reg.created_at || reg.registered_at)}
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
+
+      {/* Exam Form Options Modal */}
+      <Modal
+        isOpen={examFormModal}
+        onClose={() => setExamFormModal(false)}
+        title="পরীক্ষার ফর্মের তথ্য পূরণ করুন"
+        size="md"
+      >
+        <div className="space-y-4">
+          {/* Exam year */}
+          <div>
+            <label className="block text-sm font-body-md text-on-surface-variant mb-1">
+              পরীক্ষার সাল <span className="text-xs text-on-surface-variant">(২০-এর পরের অংশ, যেমন: ২৬)</span>
+            </label>
+            <input
+              type="number"
+              min="0" max="99"
+              value={examOptions.examYear}
+              onChange={e => setExamOptions(prev => ({ ...prev, examYear: e.target.value.slice(0, 2) }))}
+              className="w-full border border-outline-variant rounded-lg px-3 py-2 text-on-background font-body-md focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="২৬"
+            />
+          </div>
+
+          {/* Study year */}
+          <div>
+            <label className="block text-sm font-body-md text-on-surface-variant mb-1">বর্ষ</label>
+            <select
+              value={examOptions.studyYear}
+              onChange={e => setExamOptions(prev => ({ ...prev, studyYear: e.target.value }))}
+              className="w-full border border-outline-variant rounded-lg px-3 py-2 text-on-background font-body-md focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="১ম">১ম বর্ষ</option>
+              <option value="২য়">২য় বর্ষ</option>
+              <option value="৩য়">৩য় বর্ষ</option>
+              <option value="৪র্থ">৪র্থ বর্ষ</option>
+            </select>
+          </div>
+
+          {/* Koushal */}
+          <div>
+            <label className="block text-sm font-body-md text-on-surface-variant mb-1">কৌশল (বিভাগ)</label>
+            <input
+              type="text"
+              value={examOptions.koushal}
+              onChange={e => setExamOptions(prev => ({ ...prev, koushal: e.target.value }))}
+              className="w-full border border-outline-variant rounded-lg px-3 py-2 text-on-background font-body-md focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="সিএসই"
+            />
+          </div>
+
+          {/* Semester no */}
+          <div>
+            <label className="block text-sm font-body-md text-on-surface-variant mb-1">সেমিস্টার নং</label>
+            <select
+              value={examOptions.semesterNo}
+              onChange={e => setExamOptions(prev => ({ ...prev, semesterNo: e.target.value }))}
+              className="w-full border border-outline-variant rounded-lg px-3 py-2 text-on-background font-body-md focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="১ম">১ম সেমিস্টার</option>
+              <option value="২য়">২য় সেমিস্টার</option>
+            </select>
+          </div>
+
+          {/* Exam type */}
+          <div>
+            <label className="block text-sm font-body-md text-on-surface-variant mb-2">পরীক্ষার ধরন</label>
+            <div className="flex flex-wrap gap-4">
+              {[
+                { value: 'semester', label: 'সেমিস্টার' },
+                { value: 'backlog',  label: 'ব্যাকলগ' },
+                { value: 'short',    label: 'শর্ট সেমিস্টার' },
+              ].map(opt => (
+                <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="examType"
+                    value={opt.value}
+                    checked={examOptions.examType === opt.value}
+                    onChange={() => setExamOptions(prev => ({ ...prev, examType: opt.value }))}
+                    className="accent-primary w-4 h-4"
+                  />
+                  <span className="font-body-md text-on-background">{opt.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex gap-3 justify-end pt-2 border-t border-outline-variant">
+            <Button variant="ghost" onClick={() => setExamFormModal(false)}>বাতিল</Button>
+            <Button onClick={handleGenerateExamPDF}>
+              <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>assignment</span>
+              ফর্ম তৈরি করুন
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Confirm Drop Modal */}
       <Modal
@@ -145,14 +399,19 @@ export default function RegistrationsPage() {
         title="Drop Course"
         size="sm"
       >
-        <div className="space-y-4">
-          <p className="text-sm text-[#6B625C]">
-            Are you sure you want to drop{' '}
-            <span className="font-semibold text-[#2E2A27]">
-              {confirmModal.reg?.course?.course_no} — {confirmModal.reg?.course?.title}
-            </span>
-            ? This action cannot be undone.
-          </p>
+        <div className="space-y-6">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-full bg-error-container flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-error text-[20px]">warning</span>
+            </div>
+            <p className="text-on-surface-variant font-body-md text-sm leading-relaxed pt-1">
+              Are you sure you want to drop{' '}
+              <span className="font-body-md-bold text-on-background">
+                {confirmModal.reg?.course?.course_no} &mdash; {confirmModal.reg?.course?.title || confirmModal.reg?.course?.course_title}
+              </span>
+              ? This action cannot be undone.
+            </p>
+          </div>
           <div className="flex gap-3 justify-end">
             <Button
               variant="ghost"
@@ -161,7 +420,7 @@ export default function RegistrationsPage() {
               Cancel
             </Button>
             <Button variant="danger" onClick={handleConfirmDrop}>
-              <Trash2 className="w-4 h-4" />
+              <span className="material-symbols-outlined text-[18px]">delete</span>
               Drop Course
             </Button>
           </div>
