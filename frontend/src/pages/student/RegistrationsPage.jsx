@@ -22,7 +22,7 @@ export default function RegistrationsPage() {
     examYear: String(new Date().getFullYear()).slice(-2),
     studyYear: '২য়',
     koushal: '',
-    semesterNo: '২য়',
+    semesterNo: 'বিজোড়',
     examType: 'semester',
   })
 
@@ -352,8 +352,8 @@ export default function RegistrationsPage() {
               onChange={e => setExamOptions(prev => ({ ...prev, semesterNo: e.target.value }))}
               className="w-full border border-outline-variant rounded-lg px-3 py-2 text-on-background font-body-md focus:outline-none focus:ring-2 focus:ring-primary"
             >
-              <option value="১ম">১ম সেমিস্টার</option>
-              <option value="২য়">২য় সেমিস্টার</option>
+              <option value="বিজোড়">বিজোড় সেমিস্টার</option>
+              <option value="জোড়">জোড় সেমিস্টার</option>
             </select>
           </div>
 
