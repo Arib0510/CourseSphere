@@ -52,11 +52,14 @@ function buildFormHTML(user, registrations, examOptions = {}) {
   }).join('')
 
   return `
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap');
+</style>
 <div id="exam-form-root" style="
   width:710px;
   margin:0 auto;
   padding:18px 32px 14px;
-  font-family:'Kalpurush','SolaimanLipi','Noto Sans Bengali','Hind Siliguri',Arial,sans-serif;
+  font-family:'Noto Sans Bengali','Kalpurush','SolaimanLipi','Hind Siliguri',Arial,sans-serif;
   font-size:12px;
   line-height:1.55;
   color:#000;
