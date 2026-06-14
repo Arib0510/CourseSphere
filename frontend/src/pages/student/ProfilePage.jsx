@@ -4,15 +4,15 @@ import { useAuth } from '../../context/AuthContext'
 import { updateProfile } from '../../services/authService'
 import Loader from '../../components/common/Loader'
 
-const DEPARTMENTS = ['CSE','EEE','ETE','ME','CE','IPE','GCE','URP','ARCH','MSE','MME','BECM']
+const DEPARTMENTS = ['CSE', 'EEE', 'ETE', 'ME', 'CE', 'IPE', 'GCE', 'URP', 'ARCH', 'MSE', 'MME', 'BECM']
 
 export default function ProfilePage() {
   const { user, setUser } = useAuth()
 
   const [formData, setFormData] = useState({ name: '', student_id: '', department: '', registration_no: '', academic_session: '', earned_credits: '', backlog_count: '', name_bangla: '', father_name: '', father_name_bangla: '', address_current: '' })
-  const [loading, setLoading]   = useState(false)
-  const [saved, setSaved]       = useState(false)
-  const [errors, setErrors]     = useState({})
+  const [loading, setLoading] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [errors, setErrors] = useState({})
   const [avatarSrc, setAvatarSrc] = useState(null)
   const [avatarHover, setAvatarHover] = useState(false)
   const fileRef = useRef(null)
@@ -21,17 +21,17 @@ export default function ProfilePage() {
   useEffect(() => {
     if (user) {
       setFormData({
-        name:               user.name               || '',
-        student_id:         user.student_id         || '',
-        department:         user.department         || '',
-        registration_no:    user.registration_no    || '',
-        academic_session:   user.academic_session   || '',
-        earned_credits:     user.earned_credits     != null ? String(user.earned_credits) : '',
-        backlog_count:      user.backlog_count      != null ? String(user.backlog_count)  : '',
-        name_bangla:        user.name_bangla        || '',
-        father_name:        user.father_name        || '',
+        name: user.name || '',
+        student_id: user.student_id || '',
+        department: user.department || '',
+        registration_no: user.registration_no || '',
+        academic_session: user.academic_session || '',
+        earned_credits: user.earned_credits != null ? String(user.earned_credits) : '',
+        backlog_count: user.backlog_count != null ? String(user.backlog_count) : '',
+        name_bangla: user.name_bangla || '',
+        father_name: user.father_name || '',
         father_name_bangla: user.father_name_bangla || '',
-        address_current:    user.address_current    || '',
+        address_current: user.address_current || '',
       })
       const stored = localStorage.getItem(`avatar_${user.id}`)
       if (stored) setAvatarSrc(stored)
@@ -52,17 +52,17 @@ export default function ProfilePage() {
   }
 
   const hasChanges =
-    formData.name               !== (user?.name               || '') ||
-    formData.student_id         !== (user?.student_id         || '') ||
-    formData.department         !== (user?.department         || '') ||
-    formData.registration_no    !== (user?.registration_no    || '') ||
-    formData.academic_session   !== (user?.academic_session   || '') ||
-    formData.earned_credits     !== (user?.earned_credits     != null ? String(user.earned_credits) : '') ||
-    formData.backlog_count      !== (user?.backlog_count      != null ? String(user.backlog_count)  : '') ||
-    formData.name_bangla        !== (user?.name_bangla        || '') ||
-    formData.father_name        !== (user?.father_name        || '') ||
+    formData.name !== (user?.name || '') ||
+    formData.student_id !== (user?.student_id || '') ||
+    formData.department !== (user?.department || '') ||
+    formData.registration_no !== (user?.registration_no || '') ||
+    formData.academic_session !== (user?.academic_session || '') ||
+    formData.earned_credits !== (user?.earned_credits != null ? String(user.earned_credits) : '') ||
+    formData.backlog_count !== (user?.backlog_count != null ? String(user.backlog_count) : '') ||
+    formData.name_bangla !== (user?.name_bangla || '') ||
+    formData.father_name !== (user?.father_name || '') ||
     formData.father_name_bangla !== (user?.father_name_bangla || '') ||
-    formData.address_current    !== (user?.address_current    || '')
+    formData.address_current !== (user?.address_current || '')
 
   /* avatar file pick */
   const handleAvatarClick = () => fileRef.current?.click()
@@ -100,31 +100,31 @@ export default function ProfilePage() {
     setLoading(true)
     try {
       const payload = {
-        full_name:            formData.name,
-        student_id:           formData.student_id,
-        department:           formData.department,
-        registration_no:      formData.registration_no.trim()      || null,
-        academic_session:     formData.academic_session.trim()     || null,
-        earned_credits:       formData.earned_credits !== '' ? Number(formData.earned_credits) : null,
-        backlog_count:        formData.backlog_count  !== '' ? Number(formData.backlog_count)  : null,
-        name_bangla:          formData.name_bangla.trim()          || null,
-        father_name:          formData.father_name.trim()          || null,
-        father_name_bangla:   formData.father_name_bangla.trim()   || null,
-        address_current:      formData.address_current.trim()      || null,
+        full_name: formData.name,
+        student_id: formData.student_id,
+        department: formData.department,
+        registration_no: formData.registration_no.trim() || null,
+        academic_session: formData.academic_session.trim() || null,
+        earned_credits: formData.earned_credits !== '' ? Number(formData.earned_credits) : null,
+        backlog_count: formData.backlog_count !== '' ? Number(formData.backlog_count) : null,
+        name_bangla: formData.name_bangla.trim() || null,
+        father_name: formData.father_name.trim() || null,
+        father_name_bangla: formData.father_name_bangla.trim() || null,
+        address_current: formData.address_current.trim() || null,
       }
       const res = await updateProfile(payload)
       const updated = res.data?.data || res.data
       setUser({
         ...user, ...updated,
         name: formData.name, full_name: formData.name,
-        registration_no:      payload.registration_no,
-        academic_session:     payload.academic_session,
-        earned_credits:       payload.earned_credits,
-        backlog_count:        payload.backlog_count,
-        name_bangla:          payload.name_bangla,
-        father_name:          payload.father_name,
-        father_name_bangla:   payload.father_name_bangla,
-        address_current:      payload.address_current,
+        registration_no: payload.registration_no,
+        academic_session: payload.academic_session,
+        earned_credits: payload.earned_credits,
+        backlog_count: payload.backlog_count,
+        name_bangla: payload.name_bangla,
+        father_name: payload.father_name,
+        father_name_bangla: payload.father_name_bangla,
+        address_current: payload.address_current,
       })
       setSaved(true)
       toast.success('Profile updated successfully!')
@@ -258,9 +258,8 @@ export default function ProfilePage() {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Your full name"
-                    className={`w-full px-4 py-2.5 pl-10 bg-surface-container-low border rounded-input font-body-md text-on-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all ${
-                      errors.name ? 'border-error focus:ring-error' : 'border-outline-variant'
-                    }`}
+                    className={`w-full px-4 py-2.5 pl-10 bg-surface-container-low border rounded-input font-body-md text-on-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all ${errors.name ? 'border-error focus:ring-error' : 'border-outline-variant'
+                      }`}
                   />
                 </div>
                 {errors.name && (
@@ -329,182 +328,182 @@ export default function ProfilePage() {
               </div>
             </div>
 
-          {/* ── Registration Details for PDF Form ──── */}
-          <div className="border-t border-outline-variant pt-5 mb-6">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="material-symbols-outlined text-[16px] text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>picture_as_pdf</span>
-              <h4 className="font-body-md-bold text-primary text-sm">Registration Details</h4>
+            {/* ── Registration Details for PDF Form ──── */}
+            <div className="border-t border-outline-variant pt-5 mb-6">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="material-symbols-outlined text-[16px] text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>picture_as_pdf</span>
+                <h4 className="font-body-md-bold text-primary text-sm">Registration Details</h4>
+              </div>
+              <p className="text-[11px] text-on-surface-variant mb-4 font-body-md">
+                Fill these fields to auto-populate your official RUET Course Registration PDF form.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+                {/* Registration No. */}
+                <div className="sm:col-span-2">
+                  <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
+                    Registration Number <span className="normal-case font-normal">(নিবন্ধন সংখ্যা)</span>
+                  </label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">tag</span>
+                    <input
+                      type="text"
+                      name="registration_no"
+                      value={formData.registration_no}
+                      onChange={handleChange}
+                      placeholder="e.g. 744 / 2022-23"
+                      className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* Academic Session with Semester */}
+                <div className="sm:col-span-2">
+                  <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
+                    Academic Session with Semester
+                  </label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">calendar_month</span>
+                    <input
+                      type="text"
+                      name="academic_session"
+                      value={formData.academic_session}
+                      onChange={handleChange}
+                      placeholder="e.g. 3rd year ODD semester"
+                      className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* Previously Earned Credits */}
+                <div>
+                  <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
+                    Previously Earned Credits
+                  </label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">military_tech</span>
+                    <input
+                      type="number"
+                      name="earned_credits"
+                      min="0"
+                      step="0.5"
+                      value={formData.earned_credits}
+                      onChange={handleChange}
+                      placeholder="e.g. 72.5"
+                      className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* No. of Backlog Courses */}
+                <div>
+                  <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
+                    No. of Backlog Courses
+                  </label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">report_problem</span>
+                    <input
+                      type="number"
+                      name="backlog_count"
+                      min="0"
+                      value={formData.backlog_count}
+                      onChange={handleChange}
+                      placeholder="e.g. 2"
+                      className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+              </div>
             </div>
-            <p className="text-[11px] text-on-surface-variant mb-4 font-body-md">
-              Fill these fields to auto-populate your official RUET Course Registration PDF form.
-            </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-
-              {/* Registration No. */}
-              <div className="sm:col-span-2">
-                <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
-                  Registration Number <span className="normal-case font-normal">(নিবন্ধন সংখ্যা)</span>
-                </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">tag</span>
-                  <input
-                    type="text"
-                    name="registration_no"
-                    value={formData.registration_no}
-                    onChange={handleChange}
-                    placeholder="e.g. 2204020"
-                    className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                  />
-                </div>
+            {/* ── Exam Form Details ───────────────────── */}
+            <div className="border-t border-outline-variant pt-5 mb-6">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="material-symbols-outlined text-[16px] text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>assignment</span>
+                <h4 className="font-body-md-bold text-secondary text-sm">Exam Form Details</h4>
               </div>
+              <p className="text-[11px] text-on-surface-variant mb-4 font-body-md">
+                Fill these fields to auto-populate the official RUET B.Sc. Engineering Exam Application Form.
+              </p>
 
-              {/* Academic Session with Semester */}
-              <div className="sm:col-span-2">
-                <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
-                  Academic Session with Semester
-                </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">calendar_month</span>
-                  <input
-                    type="text"
-                    name="academic_session"
-                    value={formData.academic_session}
-                    onChange={handleChange}
-                    placeholder="e.g. 2022-2023, 5th Semester"
-                    className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                  />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+                {/* Name in Bengali */}
+                <div className="sm:col-span-2">
+                  <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
+                    Full Name in Bengali (বাংলা নাম)
+                  </label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">translate</span>
+                    <input
+                      type="text"
+                      name="name_bangla"
+                      value={formData.name_bangla}
+                      onChange={handleChange}
+                      placeholder="যেমন: মোহাম্মদ রাফি"
+                      className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* Previously Earned Credits */}
-              <div>
-                <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
-                  Previously Earned Credits
-                </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">military_tech</span>
-                  <input
-                    type="number"
-                    name="earned_credits"
-                    min="0"
-                    step="0.5"
-                    value={formData.earned_credits}
-                    onChange={handleChange}
-                    placeholder="e.g. 72.5"
-                    className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                  />
+                {/* Father's Name in English */}
+                <div>
+                  <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
+                    Father&apos;s Name (English)
+                  </label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">person_outline</span>
+                    <input
+                      type="text"
+                      name="father_name"
+                      value={formData.father_name}
+                      onChange={handleChange}
+                      placeholder="e.g. Md. Rafiqul Islam"
+                      className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* No. of Backlog Courses */}
-              <div>
-                <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
-                  No. of Backlog Courses
-                </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">report_problem</span>
-                  <input
-                    type="number"
-                    name="backlog_count"
-                    min="0"
-                    value={formData.backlog_count}
-                    onChange={handleChange}
-                    placeholder="e.g. 2"
-                    className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                  />
+                {/* Father's Name in Bengali */}
+                <div>
+                  <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
+                    Father&apos;s Name in Bengali (পিতার নাম)
+                  </label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">person_outline</span>
+                    <input
+                      type="text"
+                      name="father_name_bangla"
+                      value={formData.father_name_bangla}
+                      onChange={handleChange}
+                      placeholder="যেমন: মোঃ রফিকুল ইসলাম"
+                      className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all"
+                    />
+                  </div>
                 </div>
-              </div>
 
+                {/* Current Address */}
+                <div className="sm:col-span-2">
+                  <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
+                    Current Address (বর্তমান ঠিকানা)
+                  </label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-3 text-outline text-[18px]">home</span>
+                    <textarea
+                      name="address_current"
+                      value={formData.address_current}
+                      onChange={handleChange}
+                      rows={2}
+                      placeholder="Village/Area, Post Office, District"
+                      className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all resize-none"
+                    />
+                  </div>
+                </div>
+
+              </div>
             </div>
-          </div>
-
-          {/* ── Exam Form Details ───────────────────── */}
-          <div className="border-t border-outline-variant pt-5 mb-6">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="material-symbols-outlined text-[16px] text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>assignment</span>
-              <h4 className="font-body-md-bold text-secondary text-sm">Exam Form Details</h4>
-            </div>
-            <p className="text-[11px] text-on-surface-variant mb-4 font-body-md">
-              Fill these fields to auto-populate the official RUET B.Sc. Engineering Exam Application Form.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-
-              {/* Name in Bengali */}
-              <div className="sm:col-span-2">
-                <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
-                  Full Name in Bengali (বাংলা নাম)
-                </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">translate</span>
-                  <input
-                    type="text"
-                    name="name_bangla"
-                    value={formData.name_bangla}
-                    onChange={handleChange}
-                    placeholder="যেমন: মোহাম্মদ রাফি"
-                    className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all"
-                  />
-                </div>
-              </div>
-
-              {/* Father's Name in English */}
-              <div>
-                <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
-                  Father&apos;s Name (English)
-                </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">person_outline</span>
-                  <input
-                    type="text"
-                    name="father_name"
-                    value={formData.father_name}
-                    onChange={handleChange}
-                    placeholder="e.g. Md. Rafiqul Islam"
-                    className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all"
-                  />
-                </div>
-              </div>
-
-              {/* Father's Name in Bengali */}
-              <div>
-                <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
-                  Father&apos;s Name in Bengali (পিতার নাম)
-                </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">person_outline</span>
-                  <input
-                    type="text"
-                    name="father_name_bangla"
-                    value={formData.father_name_bangla}
-                    onChange={handleChange}
-                    placeholder="যেমন: মোঃ রফিকুল ইসলাম"
-                    className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all"
-                  />
-                </div>
-              </div>
-
-              {/* Current Address */}
-              <div className="sm:col-span-2">
-                <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
-                  Current Address (বর্তমান ঠিকানা)
-                </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-3 text-outline text-[18px]">home</span>
-                  <textarea
-                    name="address_current"
-                    value={formData.address_current}
-                    onChange={handleChange}
-                    rows={2}
-                    placeholder="Village/Area, Post Office, District"
-                    className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all resize-none"
-                  />
-                </div>
-              </div>
-
-            </div>
-          </div>
 
             {/* Save Row */}
             <div className="flex items-center justify-between pt-4 border-t border-outline-variant">
@@ -556,9 +555,10 @@ export default function ProfilePage() {
           </h4>
           <div className="space-y-0">
             {[
-              { label: 'Account ID',    value: user.id ? `${user.id.slice(0, 8)}...` : '—' },
-              { label: 'Role',          value: user.role || 'student' },
-              { label: 'Member Since',  value: user.created_at
+              { label: 'Account ID', value: user.id ? `${user.id.slice(0, 8)}...` : '—' },
+              { label: 'Role', value: user.role || 'student' },
+              {
+                label: 'Member Since', value: user.created_at
                   ? new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
                   : '—'
               },
