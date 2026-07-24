@@ -135,18 +135,37 @@ export function generateRegistrationPDF(user, regs, extras = {}) {
   const boxX  = LM + 4
   const boxLW = 44
   const boxVW = CW - boxLW - 8
-  const boxH  = 10
+
+  // Format backlog string: if user typed comma/space separated course numbers
+  let backlogText = ''
+  if (backlogs) {
+    const rawTokens = String(backlogs).split(/[,;\s]+/).filter(Boolean)
+    backlogText = rawTokens.length > 0 ? rawTokens.join(', ') : String(backlogs)
+  }
+
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(9)
+  const backlogLines = backlogText ? doc.splitTextToSize(backlogText, boxVW - 6) : []
+  const lineHeight = 4.2
+  const boxH = Math.max(10, backlogLines.length * lineHeight + 4)
+
   doc.rect(boxX, y, boxLW, boxH)
   doc.rect(boxX + boxLW, y, boxVW, boxH)
-  doc.setFontSize(9)
-  doc.text('Course No. of', boxX + 2, y + 3.5)
-  doc.text('Backlog courses', boxX + 2, y + 7.5)
-  if (backlogs) {
+
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(8.5)
+  const labelCenterY = y + boxH / 2 - 1.5
+  doc.text('Course No. of', boxX + 2, labelCenterY)
+  doc.text('Backlog courses', boxX + 2, labelCenterY + 4)
+
+  if (backlogLines.length > 0) {
     doc.setFont('helvetica', 'bold')
-    doc.setFontSize(10)
-    doc.text(backlogs, boxX + boxLW + 4, y + 6)
-    doc.setFont('helvetica', 'normal')
     doc.setFontSize(9)
+    const startValY = y + (boxH > 10 ? 4.5 : (boxH / 2 + 1.5))
+    backlogLines.forEach((lineStr, idx) => {
+      doc.text(lineStr, boxX + boxLW + 3, startValY + idx * lineHeight)
+    })
+    doc.setFont('helvetica', 'normal')
   }
   y += boxH + 6
 

@@ -199,7 +199,7 @@ const updateProfile = async (req, res) => {
     if (registration_no      !== undefined) updates.registration_no      = registration_no      || null;
     if (academic_session     !== undefined) updates.academic_session     = academic_session     || null;
     if (earned_credits       !== undefined) updates.earned_credits       = earned_credits       !== '' && earned_credits       != null ? Number(earned_credits)  : null;
-    if (backlog_count        !== undefined) updates.backlog_count        = backlog_count        !== '' && backlog_count        != null ? Number(backlog_count)   : null;
+    if (backlog_count        !== undefined) updates.backlog_count        = backlog_count        != null ? String(backlog_count)   : null;
     if (name_bangla          !== undefined) updates.name_bangla          = name_bangla          || null;
     if (father_name          !== undefined) updates.father_name          = father_name          || null;
     if (father_name_bangla   !== undefined) updates.father_name_bangla   = father_name_bangla   || null;

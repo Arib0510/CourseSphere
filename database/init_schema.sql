@@ -13,6 +13,14 @@ CREATE TABLE IF NOT EXISTS profiles (
     full_name TEXT,
     student_id TEXT UNIQUE,
     department TEXT,
+    registration_no TEXT,
+    academic_session TEXT,
+    earned_credits NUMERIC(6,2),
+    backlog_count TEXT,
+    name_bangla TEXT,
+    father_name TEXT,
+    father_name_bangla TEXT,
+    address_current TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

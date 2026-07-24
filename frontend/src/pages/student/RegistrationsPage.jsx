@@ -90,7 +90,7 @@ export default function RegistrationsPage() {
         registrationNo:  user?.registration_no  || '',
         academicSession: user?.academic_session  || '',
         earnedCredits:   user?.earned_credits    != null ? Number(user.earned_credits) : null,
-        backlogCount:    user?.backlog_count      != null ? Number(user.backlog_count)  : null,
+        backlogCount:    user?.backlog_count      != null ? String(user.backlog_count)  : '',
       }
       generateRegistrationPDF(user, registrations, extras)
       toast.success('Registration form downloaded!')

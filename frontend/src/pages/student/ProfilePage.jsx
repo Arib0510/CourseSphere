@@ -27,7 +27,7 @@ export default function ProfilePage() {
         registration_no: user.registration_no || '',
         academic_session: user.academic_session || '',
         earned_credits: user.earned_credits != null ? String(user.earned_credits) : '',
-        backlog_count: user.backlog_count != null ? String(user.backlog_count) : '',
+        backlog_count: user.backlog_count != null && user.backlog_count !== 'NaN' ? String(user.backlog_count) : '',
         name_bangla: user.name_bangla || '',
         father_name: user.father_name || '',
         father_name_bangla: user.father_name_bangla || '',
@@ -106,7 +106,7 @@ export default function ProfilePage() {
         registration_no: formData.registration_no.trim() || null,
         academic_session: formData.academic_session.trim() || null,
         earned_credits: formData.earned_credits !== '' ? Number(formData.earned_credits) : null,
-        backlog_count: formData.backlog_count !== '' ? Number(formData.backlog_count) : null,
+        backlog_count: formData.backlog_count ? formData.backlog_count.trim() || null : null,
         name_bangla: formData.name_bangla.trim() || null,
         father_name: formData.father_name.trim() || null,
         father_name_bangla: formData.father_name_bangla.trim() || null,
@@ -199,7 +199,7 @@ export default function ProfilePage() {
             <p className="text-on-surface-variant font-body-md text-sm mt-0.5 truncate">{user.email}</p>
 
             <div className="flex items-center gap-2 mt-2.5 flex-wrap justify-center sm:justify-start">
-              <span className="bg-secondary-fixed text-primary border border-secondary-fixed-dim px-2.5 py-0.5 rounded-full font-label-caps text-[10px] uppercase tracking-wider capitalize">
+              <span className="bg-secondary-fixed text-primary border border-secondary-fixed-dim px-2.5 py-0.5 rounded-full font-label-caps text-[10px] tracking-wider capitalize">
                 {user.role || 'student'}
               </span>
               {(formData.department || user.department) && (
@@ -343,7 +343,7 @@ export default function ProfilePage() {
                 {/* Registration No. */}
                 <div className="sm:col-span-2">
                   <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
-                    Registration Number <span className="normal-case font-normal">(নিবন্ধন সংখ্যা)</span>
+                    Registration Number with Session <span className="normal-case font-normal">(নিবন্ধন সংখ্যা)</span>
                   </label>
                   <div className="relative">
                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">tag</span>
@@ -396,20 +396,19 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                {/* No. of Backlog Courses */}
+                {/* Course No. of Backlog Courses */}
                 <div>
                   <label className="block font-label-caps text-on-surface-variant text-[10px] uppercase tracking-wider mb-1.5">
-                    No. of Backlog Courses
+                    Course No. of Backlog Courses
                   </label>
                   <div className="relative">
                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">report_problem</span>
                     <input
-                      type="number"
+                      type="text"
                       name="backlog_count"
-                      min="0"
                       value={formData.backlog_count}
                       onChange={handleChange}
-                      placeholder="e.g. 2"
+                      placeholder="e.g. ETE 1111, ETE 1211"
                       className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                     />
                   </div>
