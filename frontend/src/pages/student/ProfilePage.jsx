@@ -442,7 +442,6 @@ export default function ProfilePage() {
                       name="name_bangla"
                       value={formData.name_bangla}
                       onChange={handleChange}
-                      placeholder="যেমন: মোহাম্মদ রাফি"
                       className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all"
                     />
                   </div>
@@ -460,7 +459,6 @@ export default function ProfilePage() {
                       name="father_name"
                       value={formData.father_name}
                       onChange={handleChange}
-                      placeholder="e.g. Md. Rafiqul Islam"
                       className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all"
                     />
                   </div>
@@ -478,7 +476,6 @@ export default function ProfilePage() {
                       name="father_name_bangla"
                       value={formData.father_name_bangla}
                       onChange={handleChange}
-                      placeholder="যেমন: মোঃ রফিকুল ইসলাম"
                       className="w-full px-4 py-2.5 pl-10 bg-surface-container-low border border-outline-variant rounded-input font-body-md text-on-background focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all"
                     />
                   </div>
