@@ -252,7 +252,7 @@ export default function RegistrationsPage() {
                           <span className="material-symbols-outlined text-[14px]">military_tech</span>
                           Credits
                         </span>
-                        <span className="font-body-md-bold text-on-background text-sm">{reg.course.credit_hours}</span>
+                        <span className="font-body-md-bold text-on-background text-sm">{reg.course.credits}</span>
                       </div>
                     )}
                     {reg.course?.semester && (
