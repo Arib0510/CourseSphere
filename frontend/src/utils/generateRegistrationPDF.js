@@ -249,7 +249,36 @@ export function generateRegistrationPDF(user, regs, extras = {}) {
   solidLine(LM, y + 1.5, RM)
 
   // ─── SAVE ────────────────────────────────────────────────────────
-  const id   = user?.student_id || 'student'
+  const id = user?.student_id || 'student'
   const date = new Date().toISOString().slice(0, 10)
-  doc.save(`RUET_CourseRegistration_${id}_${date}.pdf`)
+
+  // Derive term code (e.g. 3-2 for 3rd Year Even, 1-1 for 1st Year Odd)
+  let yearStr = user?.academic_year || extras?.academicYear || ''
+  let semStr  = user?.semester      || extras?.semester     || ''
+
+  if ((!yearStr || !semStr) && Array.isArray(regs) && regs.length > 0) {
+    const freq = {}
+    regs.forEach(r => {
+      const y = r.course?.academic_year || ''
+      const s = r.course?.semester || ''
+      if (y || s) {
+        const key = `${y}|||${s}`
+        freq[key] = (freq[key] || 0) + 1
+      }
+    })
+    const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1])
+    if (sorted.length > 0 && sorted[0][0]) {
+      const [y, s] = sorted[0][0].split('|||')
+      yearStr = yearStr || y
+      semStr  = semStr  || s
+    }
+  }
+
+  const yearNum = { '1st Year': '1', '2nd Year': '2', '3rd Year': '3', '4th Year': '4' }[yearStr]
+    || yearStr.match(/\d/)?.[0] || '1'
+  const semNum  = { 'Odd': '1', 'Even': '2', 'odd': '1', 'even': '2' }[semStr]
+    || (semStr.toLowerCase().includes('odd') ? '1' : '2')
+
+  const termCode = `${yearNum}-${semNum}`
+  doc.save(`${id}_${termCode}_CourseRegistration_${date}.pdf`)
 }
