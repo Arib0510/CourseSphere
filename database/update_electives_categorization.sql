@@ -1,14 +1,18 @@
 -- =========================================================================
--- CourseSphere Database Update: Delete Placeholders & Categorize Electives
+-- CourseSphere Database Update: Delete Placeholders, Categorize Electives & Update Capacity
 -- Run this in your Supabase SQL Editor
 -- =========================================================================
 
--- 1. Remove obsolete Elective Placeholder courses
+-- 1. Update seat capacity of ALL courses to 60 and update default column capacity to 60
+ALTER TABLE public.courses ALTER COLUMN capacity SET DEFAULT 60;
+UPDATE public.courses SET capacity = 60;
+
+-- 2. Remove obsolete Elective Placeholder courses
 DELETE FROM public.courses
 WHERE course_no IN ('ETE 3219', 'ETE 3220', 'ETE 4119', 'ETE 4218')
    OR course_title ILIKE '%Placeholder%';
 
--- 2. Update Elective-I courses to 3rd Year, Even Semester
+-- 3. Update Elective-I courses to 3rd Year, Even Semester
 UPDATE public.courses
 SET 
   academic_year = '3rd Year',
@@ -21,7 +25,7 @@ WHERE category = 'Elective-I'
      'ETE 3233', 'ETE 3234', 'ETE 3235', 'ETE 3236'
    );
 
--- 3. Update Elective-II courses to 4th Year, Odd Semester
+-- 4. Update Elective-II courses to 4th Year, Odd Semester
 UPDATE public.courses
 SET 
   academic_year = '4th Year',
@@ -33,7 +37,7 @@ WHERE category = 'Elective-II'
      'ETE 4137', 'ETE 4139'
    );
 
--- 4. Update Elective-III courses to 4th Year, Even Semester
+-- 5. Update Elective-III courses to 4th Year, Even Semester
 UPDATE public.courses
 SET 
   academic_year = '4th Year',
@@ -45,8 +49,7 @@ WHERE category = 'Elective-III'
      'ETE 4233'
    );
 
--- Verify remaining courses
-SELECT course_no, course_title, academic_year, semester, category 
+-- Verify remaining courses and capacity
+SELECT course_no, course_title, academic_year, semester, category, capacity 
 FROM public.courses 
-WHERE category LIKE 'Elective%'
-ORDER BY category, course_no;
+ORDER BY course_no;

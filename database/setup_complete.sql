@@ -48,7 +48,7 @@ CREATE TABLE public.courses (
     academic_year TEXT,
     semester TEXT,
     category TEXT,
-    capacity INTEGER DEFAULT 40 CHECK (capacity > 0),
+    capacity INTEGER DEFAULT 60 CHECK (capacity > 0),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
