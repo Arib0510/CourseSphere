@@ -52,6 +52,13 @@ const getMyRegistrations = async (req, res) => {
       course: reg.courses,
     }));
 
+    // Sort registered courses by ascending course_no
+    formatted.sort((a, b) => {
+      const codeA = a.course?.course_no || "";
+      const codeB = b.course?.course_no || "";
+      return codeA.localeCompare(codeB, undefined, { numeric: true, sensitivity: "base" });
+    });
+
     return success(
       res,
       "Registrations retrieved successfully.",

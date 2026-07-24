@@ -23,7 +23,13 @@ const getAllCourses = async (req, res) => {
 
     if (semester)      query = query.eq("semester", semester);
     if (academic_year) query = query.eq("academic_year", academic_year);
-    if (category)      query = query.eq("category", category);
+    if (category) {
+      if (category === "Elective") {
+        query = query.ilike("category", "Elective%");
+      } else {
+        query = query.eq("category", category);
+      }
+    }
     if (search) {
       query = query.or(
         `course_no.ilike.%${search}%,course_title.ilike.%${search}%`

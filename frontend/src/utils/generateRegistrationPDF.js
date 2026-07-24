@@ -156,13 +156,20 @@ export function generateRegistrationPDF(user, regs, extras = {}) {
   doc.text('Courses to be registered in this semester :', LM, y)
   y += 5
 
-  const totalCredits = regs.reduce((sum, r) => sum + (Number(r.course?.credit_hours) || 0), 0)
+  // Sort courses by course_no in ascending order
+  const sortedRegs = [...regs].sort((a, b) => {
+    const codeA = a.course?.course_no || ''
+    const codeB = b.course?.course_no || ''
+    return codeA.localeCompare(codeB, undefined, { numeric: true, sensitivity: 'base' })
+  })
+
+  const totalCredits = sortedRegs.reduce((sum, r) => sum + (Number(r.course?.credits) || 0), 0)
 
   // Build rows — always at least 10 data rows
-  const dataRows = regs.map(r => [
+  const dataRows = sortedRegs.map(r => [
     r.course?.course_no || '',
     r.course?.title || r.course?.course_title || '',
-    r.course?.credit_hours != null ? String(r.course.credit_hours) : '',
+    r.course?.credits != null ? String(r.course.credits) : '',
   ])
   while (dataRows.length < 10) dataRows.push(['', '', ''])
   dataRows.push(['', 'Total Credit of this Semester', totalCredits > 0 ? totalCredits.toFixed(1) : ''])

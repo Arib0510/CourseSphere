@@ -42,8 +42,14 @@ function buildFormHTML(user, registrations, examOptions = {}) {
   const dl = (width, val = '') =>
     `<span style="display:inline-block;min-width:${width}px;border-bottom:1px dotted #333;vertical-align:baseline;padding:0 4px 2px;text-align:left;">${val}</span>`
 
+  const sortedRegs = [...registrations].sort((a, b) => {
+    const codeA = a.course?.course_no || ''
+    const codeB = b.course?.course_no || ''
+    return codeA.localeCompare(codeB, undefined, { numeric: true, sensitivity: 'base' })
+  })
+
   const rows = Array.from({ length: 11 }, (_, i) => {
-    const reg = registrations[i]
+    const reg = sortedRegs[i]
     return `<tr>
       <td style="text-align:center;border:1px solid #333;padding:6px 4px;font-size:11px;vertical-align:top;">(${toBn(i + 1)})</td>
       <td style="text-align:center;border:1px solid #333;padding:6px 6px;font-size:11px;vertical-align:top;">${reg?.course?.course_no || ''}</td>

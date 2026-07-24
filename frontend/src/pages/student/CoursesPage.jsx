@@ -6,8 +6,9 @@ import CourseCard from '../../components/courses/CourseCard'
 import CourseFilters from '../../components/courses/CourseFilters'
 import SkeletonCard from '../../components/common/SkeletonCard'
 
-const YEAR_ORDER = ['1st Year', '2nd Year', '3rd Year', '4th Year', 'Elective']
+const YEAR_ORDER = ['1st Year', '2nd Year', '3rd Year', '4th Year']
 const SEM_ORDER  = ['Odd', 'Even']
+const CATEGORIES = ['', 'Core', 'Elective', 'Elective-I', 'Elective-II', 'Elective-III', 'Optional']
 
 function groupCourses(courses) {
   const groups = {}
@@ -150,7 +151,7 @@ export default function CoursesPage() {
             <div>
               <p className="font-label-caps text-on-surface-variant uppercase tracking-wider text-[10px] mb-3">Category</p>
               <div className="flex flex-wrap gap-2">
-                {['', 'Core', 'Elective', 'Optional', 'Theory', 'Sessional'].map(cat => (
+                {CATEGORIES.map(cat => (
                   <button
                     key={cat || 'all'}
                     onClick={() => setCategoryFilter(cat)}
@@ -160,7 +161,7 @@ export default function CoursesPage() {
                         : 'bg-surface-container-high text-on-surface-variant border border-outline-variant hover:bg-surface-variant'
                     }`}
                   >
-                    {cat || 'All'}
+                    {cat === 'Elective' ? 'All Electives' : cat || 'All'}
                   </button>
                 ))}
               </div>

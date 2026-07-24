@@ -33,7 +33,11 @@ export default function CourseCard({ course, registeredIds, onRegisterSuccess })
       <div className="flex items-start justify-between mb-3 gap-2">
         <div className="flex gap-1.5 flex-wrap">
           {course.category && (
-            <span className="bg-secondary-fixed text-primary px-2.5 py-1 rounded text-xs font-semibold tracking-wide">
+            <span className={`px-2.5 py-1 rounded text-xs font-semibold tracking-wide ${
+              course.category.startsWith('Elective')
+                ? 'bg-tertiary-fixed text-tertiary'
+                : 'bg-secondary-fixed text-primary'
+            }`}>
               {course.category}
             </span>
           )}

@@ -33,7 +33,15 @@ export default function RegistrationsPage() {
   const fetchRegistrations = () => {
     setLoading(true)
     getMyRegistrations()
-      .then(res => setRegistrations(res.data.data || res.data || []))
+      .then(res => {
+        const list = res.data.data || res.data || []
+        const sorted = [...list].sort((a, b) => {
+          const codeA = a.course?.course_no || ''
+          const codeB = b.course?.course_no || ''
+          return codeA.localeCompare(codeB, undefined, { numeric: true, sensitivity: 'base' })
+        })
+        setRegistrations(sorted)
+      })
       .catch(() => {
         setRegistrations([])
         toast.error('Failed to load registrations')
@@ -64,7 +72,7 @@ export default function RegistrationsPage() {
     }
   }
 
-  const totalCredits = registrations.reduce((sum, r) => sum + (r.course?.credit_hours || 0), 0)
+  const totalCredits = registrations.reduce((sum, r) => sum + (r.course?.credits || 0), 0)
 
   const formatDate = (dateStr) => {
     if (!dateStr) return '—'

@@ -11,14 +11,17 @@ const FULL_LOAD = 21
 
 // Category colour tokens (Tailwind classes)
 const CAT_COLORS = {
-  Core:      { bg: 'bg-primary',             text: 'text-primary',             bar: 'bg-primary' },
-  Elective:  { bg: 'bg-tertiary-fixed',       text: 'text-tertiary',            bar: 'bg-tertiary' },
-  Optional:  { bg: 'bg-secondary-container',  text: 'text-on-secondary-container', bar: 'bg-secondary-container' },
-  Theory:    { bg: 'bg-primary-fixed',        text: 'text-primary',             bar: 'bg-primary' },
-  Sessional: { bg: 'bg-tertiary-fixed',       text: 'text-tertiary',            bar: 'bg-tertiary' },
-  Other:     { bg: 'bg-surface-container',    text: 'text-on-surface-variant',  bar: 'bg-outline-variant' },
+  Core:         { bg: 'bg-primary',             text: 'text-primary',             bar: 'bg-primary' },
+  Elective:     { bg: 'bg-tertiary-fixed',       text: 'text-tertiary',            bar: 'bg-tertiary' },
+  'Elective-I':  { bg: 'bg-tertiary-fixed',       text: 'text-tertiary',            bar: 'bg-tertiary' },
+  'Elective-II': { bg: 'bg-tertiary-fixed',       text: 'text-tertiary',            bar: 'bg-tertiary' },
+  'Elective-III':{ bg: 'bg-tertiary-fixed',       text: 'text-tertiary',            bar: 'bg-tertiary' },
+  Optional:     { bg: 'bg-secondary-container',  text: 'text-on-secondary-container', bar: 'bg-secondary-container' },
+  Theory:       { bg: 'bg-primary-fixed',        text: 'text-primary',             bar: 'bg-primary' },
+  Sessional:    { bg: 'bg-tertiary-fixed',       text: 'text-tertiary',            bar: 'bg-tertiary' },
+  Other:        { bg: 'bg-surface-container',    text: 'text-on-surface-variant',  bar: 'bg-outline-variant' },
 }
-const catColor = (cat) => CAT_COLORS[cat] || CAT_COLORS.Other
+const catColor = (cat) => CAT_COLORS[cat] || (cat?.startsWith('Elective') ? CAT_COLORS.Elective : CAT_COLORS.Other)
 
 export default function DashboardPage() {
   const { user } = useAuth()

@@ -237,9 +237,7 @@ INSERT INTO public.courses (course_no, course_title, credits, credit_hours, acad
 ('ETE 3215', 'Digital Signal Processing', 3.00, 3.00, '3rd Year', 'Even'),
 ('ETE 3216', 'Sessional Based on ETE 3215', 0.75, 1.50, '3rd Year', 'Even'),
 ('ETE 3217', 'Information Theory', 3.00, 3.00, '3rd Year', 'Even'),
-('ETE 3218', 'Seminar', 0.75, 1.50, '3rd Year', 'Even'),
-('ETE 3219', 'Elective-I (Placeholder)', 3.00, 3.00, '3rd Year', 'Even'),
-('ETE 3220', 'Sessional Based on Elective-I (Placeholder)', 0.75, 1.50, '3rd Year', 'Even');
+('ETE 3218', 'Seminar', 0.75, 1.50, '3rd Year', 'Even');
 
 -- 4th Year Odd Semester
 INSERT INTO public.courses (course_no, course_title, credits, credit_hours, academic_year, semester) VALUES
@@ -252,8 +250,7 @@ INSERT INTO public.courses (course_no, course_title, credits, credit_hours, acad
 ('ETE 4116', 'Sessional Based on ETE 4115', 0.75, 1.50, '4th Year', 'Odd'),
 ('ETE 4117', 'Computer Networks', 3.00, 3.00, '4th Year', 'Odd'),
 ('ETE 4118', 'Sessional Based on ETE 4117', 0.75, 1.50, '4th Year', 'Odd'),
-('ETE 4120', 'Industrial Training', 0.75, 1.50, '4th Year', 'Odd'),
-('ETE 4119', 'Elective-II (Placeholder)', 3.00, 3.00, '4th Year', 'Odd');
+('ETE 4120', 'Industrial Training', 0.75, 1.50, '4th Year', 'Odd');
 
 -- 4th Year Even Semester
 INSERT INTO public.courses (course_no, course_title, credits, credit_hours, academic_year, semester) VALUES
@@ -264,52 +261,51 @@ INSERT INTO public.courses (course_no, course_title, credits, credit_hours, acad
 ('ETE 4214', 'Sessional Based on ETE 4213', 0.75, 1.50, '4th Year', 'Even'),
 ('ETE 4215', 'Machine Learning', 3.00, 3.00, '4th Year', 'Even'),
 ('ETE 4216', 'Sessional Based on ETE 4215', 0.75, 1.50, '4th Year', 'Even'),
-('ETE 4218', 'Elective-III (Placeholder)', 3.00, 3.00, '4th Year', 'Even'),
 ('HUM 4215', 'Project Management and Legal Issues', 3.00, 3.00, '4th Year', 'Even');
 
--- Elective-I Courses
-INSERT INTO public.courses (course_no, course_title, credits, credit_hours, category) VALUES
-('ETE 3221', 'Microwave Devices', 3.00, 3.00, 'Elective-I'),
-('ETE 3222', 'Sessional Based on ETE 3221', 0.75, 1.50, 'Elective-I'),
-('ETE 3223', 'Cellular Communication', 3.00, 3.00, 'Elective-I'),
-('ETE 3224', 'Sessional Based on ETE 3223', 0.75, 1.50, 'Elective-I'),
-('ETE 3225', 'Digital Image Processing', 3.00, 3.00, 'Elective-I'),
-('ETE 3226', 'Sessional Based on ETE 3225', 0.75, 1.50, 'Elective-I'),
-('ETE 3237', 'Digital Speech Processing', 3.00, 3.00, 'Elective-I'),
-('ETE 3238', 'Sessional Based on ETE 3237', 0.75, 1.50, 'Elective-I'),
-('ETE 3229', 'Renewable Energy', 3.00, 3.00, 'Elective-I'),
-('ETE 3230', 'Sessional Based on ETE 3229', 0.75, 1.50, 'Elective-I'),
-('ETE 3231', 'Measurement, Instrumentation and Sensors Applications', 3.00, 3.00, 'Elective-I'),
-('ETE 3232', 'Sessional Based on ETE 3231', 0.75, 1.50, 'Elective-I'),
-('ETE 3233', 'TV Engineering', 3.00, 3.00, 'Elective-I'),
-('ETE 3234', 'Sessional Based on ETE 3233', 0.75, 1.50, 'Elective-I'),
-('ETE 3235', 'Web Engineering', 3.00, 3.00, 'Elective-I'),
-('ETE 3236', 'Sessional Based on ETE 3235', 0.75, 1.50, 'Elective-I');
+-- Elective-I Courses (3rd Year Even Semester)
+INSERT INTO public.courses (course_no, course_title, credits, credit_hours, academic_year, semester, category) VALUES
+('ETE 3221', 'Microwave Devices', 3.00, 3.00, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3222', 'Sessional Based on ETE 3221', 0.75, 1.50, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3223', 'Cellular Communication', 3.00, 3.00, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3224', 'Sessional Based on ETE 3223', 0.75, 1.50, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3225', 'Digital Image Processing', 3.00, 3.00, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3226', 'Sessional Based on ETE 3225', 0.75, 1.50, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3237', 'Digital Speech Processing', 3.00, 3.00, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3238', 'Sessional Based on ETE 3237', 0.75, 1.50, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3229', 'Renewable Energy', 3.00, 3.00, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3230', 'Sessional Based on ETE 3229', 0.75, 1.50, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3231', 'Measurement, Instrumentation and Sensors Applications', 3.00, 3.00, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3232', 'Sessional Based on ETE 3231', 0.75, 1.50, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3233', 'TV Engineering', 3.00, 3.00, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3234', 'Sessional Based on ETE 3233', 0.75, 1.50, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3235', 'Web Engineering', 3.00, 3.00, '3rd Year', 'Even', 'Elective-I'),
+('ETE 3236', 'Sessional Based on ETE 3235', 0.75, 1.50, '3rd Year', 'Even', 'Elective-I');
 
--- Elective-II Courses
-INSERT INTO public.courses (course_no, course_title, credits, credit_hours, category) VALUES
-('ETE 4121', 'Multimedia Communication', 3.00, 3.00, 'Elective-II'),
-('ETE 4123', 'Biomedical Engineering', 3.00, 3.00, 'Elective-II'),
-('ETE 4125', 'Radio Wave Propagation', 3.00, 3.00, 'Elective-II'),
-('ETE 4127', 'Spread Spectrum and CDMA Technology', 3.00, 3.00, 'Elective-II'),
-('ETE 4129', 'Discrete Mathematics', 3.00, 3.00, 'Elective-II'),
-('ETE 4131', 'Graph Theory', 3.00, 3.00, 'Elective-II'),
-('ETE 4133', 'Optoelectronics', 3.00, 3.00, 'Elective-II'),
-('ETE 4135', 'Processing and Fabrication Technology', 3.00, 3.00, 'Elective-II'),
-('ETE 4137', 'Random Signal Processing', 3.00, 3.00, 'Elective-II'),
-('ETE 4139', 'Data Science', 3.00, 3.00, 'Elective-II');
+-- Elective-II Courses (4th Year Odd Semester)
+INSERT INTO public.courses (course_no, course_title, credits, credit_hours, academic_year, semester, category) VALUES
+('ETE 4121', 'Multimedia Communication', 3.00, 3.00, '4th Year', 'Odd', 'Elective-II'),
+('ETE 4123', 'Biomedical Engineering', 3.00, 3.00, '4th Year', 'Odd', 'Elective-II'),
+('ETE 4125', 'Radio Wave Propagation', 3.00, 3.00, '4th Year', 'Odd', 'Elective-II'),
+('ETE 4127', 'Spread Spectrum and CDMA Technology', 3.00, 3.00, '4th Year', 'Odd', 'Elective-II'),
+('ETE 4129', 'Discrete Mathematics', 3.00, 3.00, '4th Year', 'Odd', 'Elective-II'),
+('ETE 4131', 'Graph Theory', 3.00, 3.00, '4th Year', 'Odd', 'Elective-II'),
+('ETE 4133', 'Optoelectronics', 3.00, 3.00, '4th Year', 'Odd', 'Elective-II'),
+('ETE 4135', 'Processing and Fabrication Technology', 3.00, 3.00, '4th Year', 'Odd', 'Elective-II'),
+('ETE 4137', 'Random Signal Processing', 3.00, 3.00, '4th Year', 'Odd', 'Elective-II'),
+('ETE 4139', 'Data Science', 3.00, 3.00, '4th Year', 'Odd', 'Elective-II');
 
--- Elective-III Courses
-INSERT INTO public.courses (course_no, course_title, credits, credit_hours, category) VALUES
-('ETE 4217', 'Internet of Things (IoT)', 3.00, 3.00, 'Elective-III'),
-('ETE 4219', 'Advanced Solid-State Devices', 3.00, 3.00, 'Elective-III'),
-('ETE 4221', 'Microcontroller and Embedded System', 3.00, 3.00, 'Elective-III'),
-('ETE 4223', 'Engineering Materials', 3.00, 3.00, 'Elective-III'),
-('ETE 4225', 'Neural Network & Fuzzy Systems', 3.00, 3.00, 'Elective-III'),
-('ETE 4227', 'Operating System', 3.00, 3.00, 'Elective-III'),
-('ETE 4229', 'Software Engineering', 3.00, 3.00, 'Elective-III'),
-('ETE 4231', 'Machine Vision', 3.00, 3.00, 'Elective-III'),
-('ETE 4233', 'ICT Security', 3.00, 3.00, 'Elective-III');
+-- Elective-III Courses (4th Year Even Semester)
+INSERT INTO public.courses (course_no, course_title, credits, credit_hours, academic_year, semester, category) VALUES
+('ETE 4217', 'Internet of Things (IoT)', 3.00, 3.00, '4th Year', 'Even', 'Elective-III'),
+('ETE 4219', 'Advanced Solid-State Devices', 3.00, 3.00, '4th Year', 'Even', 'Elective-III'),
+('ETE 4221', 'Microcontroller and Embedded System', 3.00, 3.00, '4th Year', 'Even', 'Elective-III'),
+('ETE 4223', 'Engineering Materials', 3.00, 3.00, '4th Year', 'Even', 'Elective-III'),
+('ETE 4225', 'Neural Network & Fuzzy Systems', 3.00, 3.00, '4th Year', 'Even', 'Elective-III'),
+('ETE 4227', 'Operating System', 3.00, 3.00, '4th Year', 'Even', 'Elective-III'),
+('ETE 4229', 'Software Engineering', 3.00, 3.00, '4th Year', 'Even', 'Elective-III'),
+('ETE 4231', 'Machine Vision', 3.00, 3.00, '4th Year', 'Even', 'Elective-III'),
+('ETE 4233', 'ICT Security', 3.00, 3.00, '4th Year', 'Even', 'Elective-III');
 
 -- Default admin
 INSERT INTO public.admins (email) VALUES ('admin@university.edu');

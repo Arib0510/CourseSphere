@@ -24,8 +24,8 @@ const initialForm = {
 }
 
 const SEMESTERS  = ['Odd', 'Even']
-const CATEGORIES = ['Core', 'Elective', 'Optional']
-const YEARS      = ['1st Year', '2nd Year', '3rd Year', '4th Year', 'Elective']
+const CATEGORIES = ['Core', 'Elective', 'Elective-I', 'Elective-II', 'Elective-III', 'Optional']
+const YEARS      = ['1st Year', '2nd Year', '3rd Year', '4th Year']
 
 // ── PDF upload field ──────────────────────────────────────────────────────
 function PdfUploadField({ label, urlKey, url, uploading, onUpload, onChange }) {

@@ -71,10 +71,11 @@ export default function CourseFilters({
             className={selectClass}
           >
             <option value="">All Types</option>
-            <option value="Theory">Theory</option>
-            <option value="Sessional">Sessional</option>
             <option value="Core">Core</option>
-            <option value="Elective">Elective</option>
+            <option value="Elective">All Electives</option>
+            <option value="Elective-I">Elective-I</option>
+            <option value="Elective-II">Elective-II</option>
+            <option value="Elective-III">Elective-III</option>
             <option value="Optional">Optional</option>
           </select>
           <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-cs-muted pointer-events-none text-base">
